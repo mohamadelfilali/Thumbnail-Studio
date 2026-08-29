@@ -1,364 +1,253 @@
+```html
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أداة استوديو الصور المصغرة</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Thumbnail Studio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="container">
-        <!-- العنوان -->
-        <header class="header">
-            <h1>🎨 استوديو الصور المصغرة</h1>
-            <p>أداة احترافية لإنشاء صور مصغرة جذابة</p>
-        </header>
 
-        <div class="main-content">
-            <!-- اللوحة الرئيسية -->
-            <div class="workspace">
-                <!-- معاينة الصورة -->
-                <div class="preview-section">
-                    <canvas id="canvas" width="1200" height="630"></canvas>
-                    <div class="canvas-controls">
-                        <button class="btn btn-primary" onclick="downloadImage()">⬇️ تحميل الصورة</button>
-                        <button class="btn btn-secondary" onclick="resetCanvas()">🔄 إعادة تعيين</button>
-                        <button class="btn btn-secondary" onclick="copyToClipboard()">📋 نسخ</button>
-                    </div>
-                </div>
+  <div class="app">
 
-                <!-- لوحة التحكم -->
-                <div class="control-panel">
-                    <!-- علامات التبويب -->
-                    <div class="tabs">
-                        <button class="tab-btn active" onclick="switchTab('dimensions')">الأبعاد</button>
-                        <button class="tab-btn" onclick="switchTab('background')">الخلفية</button>
-                        <button class="tab-btn" onclick="switchTab('text')">النص</button>
-                        <button class="tab-btn" onclick="switchTab('fonts')">الخطوط</button>
-                        <button class="tab-btn" onclick="switchTab('styles')">الأنماط</button>
-                    </div>
+    <!-- TOP BAR -->
+    <header class="topbar">
 
-                    <!-- علامة الأبعاد -->
-                    <div id="dimensions" class="tab-content active">
-                        <div class="control-group">
-                            <label>العرض (بكسل)</label>
-                            <input type="number" id="canvasWidth" value="1200" min="100" max="4000" onchange="updateCanvasDimensions()">
-                            <input type="range" id="widthSlider" min="100" max="4000" value="1200" oninput="updateCanvasDimensions()">
-                        </div>
-                        <div class="control-group">
-                            <label>الارتفاع (بكسل)</label>
-                            <input type="number" id="canvasHeight" value="630" min="100" max="4000" onchange="updateCanvasDimensions()">
-                            <input type="range" id="heightSlider" min="100" max="4000" value="630" oninput="updateCanvasDimensions()">
-                        </div>
-                        <div class="control-group">
-                            <label>جودة الصورة (%)</label>
-                            <input type="range" id="imageQuality" min="10" max="100" value="90">
-                            <span id="qualityValue">90%</span>
-                        </div>
-                        <div class="presets">
-                            <h4>القوالب المعيارية:</h4>
-                            <button class="preset-btn" onclick="applyPreset(1200, 630)">YouTube (1200x630)</button>
-                            <button class="preset-btn" onclick="applyPreset(1200, 800)">Twitter (1200x800)</button>
-                            <button class="preset-btn" onclick="applyPreset(1080, 1080)">Instagram (1080x1080)</button>
-                            <button class="preset-btn" onclick="applyPreset(1200, 1500)">Pinterest (1200x1500)</button>
-                        </div>
-                    </div>
-
-                    <!-- علامة الخلفية -->
-                    <div id="background" class="tab-content">
-                        <div class="control-group">
-                            <label>نوع الخلفية:</label>
-                            <select id="backgroundType" onchange="updateBackground()">
-                                <option value="color">لون موحد</option>
-                                <option value="gradient">تدرج لوني</option>
-                                <option value="image">صورة</option>
-                            </select>
-                        </div>
-
-                        <!-- لون موحد -->
-                        <div id="solidColorControls" class="control-group">
-                            <label>اللون:</label>
-                            <input type="color" id="backgroundColor" value="#1a1a1a" onchange="updateBackground()">
-                        </div>
-
-                        <!-- تدرج لوني -->
-                        <div id="gradientControls" class="control-group" style="display:none;">
-                            <label>اللون الأول:</label>
-                            <input type="color" id="gradientColor1" value="#667eea" onchange="updateBackground()">
-                            <label>اللون الثاني:</label>
-                            <input type="color" id="gradientColor2" value="#764ba2" onchange="updateBackground()">
-                            <label>اتجاه التدرج:</label>
-                            <select id="gradientDirection" onchange="updateBackground()">
-                                <option value="linear-h">أفقي</option>
-                                <option value="linear-v">عمودي</option>
-                                <option value="diagonal-1">قطر�� 1</option>
-                                <option value="diagonal-2">قطري 2</option>
-                                <option value="radial">دائري</option>
-                            </select>
-                        </div>
-
-                        <!-- صورة خلفية -->
-                        <div id="imageControls" class="control-group" style="display:none;">
-                            <label>رفع صورة:</label>
-                            <input type="file" id="backgroundImage" accept="image/*" onchange="handleBackgroundImage()">
-                            <label>أو أدخل رابط الصورة:</label>
-                            <input type="url" id="imageUrl" placeholder="https://example.com/image.jpg" onchange="loadImageFromUrl()">
-                            <label>تعديل الصورة:</label>
-                            <div class="sub-controls">
-                                <label>الحجم:</label>
-                                <input type="range" id="imageSizeSlider" min="50" max="200" value="100" oninput="updateBackground()">
-                                <label>الموضع الأفقي:</label>
-                                <input type="range" id="imagePositionX" min="0" max="100" value="50" oninput="updateBackground()">
-                                <label>الموضع العمودي:</label>
-                                <input type="range" id="imagePositionY" min="0" max="100" value="50" oninput="updateBackground()">
-                                <label>الشفافية:</label>
-                                <input type="range" id="imageOpacity" min="0" max="100" value="100" oninput="updateBackground()">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- علامة النص -->
-                    <div id="text" class="tab-content">
-                        <div class="control-group">
-                            <label>النص الرئيسي:</label>
-                            <textarea id="mainText" placeholder="أدخل النص الرئيسي" oninput="updateCanvas()">نص مصغرة جميل</textarea>
-                        </div>
-                        <div class="control-group">
-                            <label>النص الثانوي:</label>
-                            <textarea id="secondaryText" placeholder="أدخل النص الثانوي" oninput="updateCanvas()">اختياري</textarea>
-                        </div>
-                        <div class="control-group">
-                            <label>حجم النص الرئيسي:</label>
-                            <input type="range" id="mainTextSize" min="12" max="200" value="80" oninput="updateCanvas()">
-                            <span id="mainTextSizeValue">80px</span>
-                        </div>
-                        <div class="control-group">
-                            <label>حجم النص الثانوي:</label>
-                            <input type="range" id="secondaryTextSize" min="8" max="100" value="32" oninput="updateCanvas()">
-                            <span id="secondaryTextSizeValue">32px</span>
-                        </div>
-                    </div>
-
-                    <!-- علامة الخطوط -->
-                    <div id="fonts" class="tab-content">
-                        <div class="control-group">
-                            <label>خط النص الرئيسي:</label>
-                            <select id="mainFont" onchange="updateCanvas()">
-                                <optgroup label="خطوط عربية">
-                                    <option value="'Arabic Typesetting', Arial, sans-serif">Arabic Typesetting</option>
-                                    <option value="'Simplified Arabic', Arial, sans-serif">Simplified Arabic</option>
-                                    <option value="'Traditional Arabic', Arial, sans-serif">Traditional Arabic</option>
-                                    <option value="'Droid Arabic Naskh', serif">Droid Arabic Naskh</option>
-                                    <option value="'Cairo', serif">Cairo</option>
-                                    <option value="'Tajawal', sans-serif">Tajawal</option>
-                                    <option value="'Amiri', serif">Amiri</option>
-                                    <option value="'IBM Plex Arabic', sans-serif">IBM Plex Arabic</option>
-                                    <option value="'Almarai', sans-serif">Almarai</option>
-                                    <option value="'Scheherazade New', serif">Scheherazade New</option>
-                                    <option value="'Lateef', serif">Lateef</option>
-                                    <option value="'Harmattan', sans-serif">Harmattan</option>
-                                    <option value="'Markazi Text', serif">Markazi Text</option>
-                                    <option value="'Reem Kufi', sans-serif">Reem Kufi</option>
-                                    <option value="'El Messiri', sans-serif">El Messiri</option>
-                                    <option value="'Lalezar', sans-serif">Lalezar</option>
-                                    <option value="'Rubik', sans-serif">Rubik</option>
-                                    <option value="'Pontano Sans', sans-serif">Pontano Sans</option>
-                                    <option value="'Bahianita', serif">Bahianita</option>
-                                    <option value="'Mada', sans-serif">Mada</option>
-                                    <option value="'Changa', sans-serif">Changa</option>
-                                    <option value="'JetBrains Mono', monospace">JetBrains Mono (عريض)</option>
-                                    <option value="'Space Mono', monospace">Space Mono (بكسل)</option>
-                                    <option value="'Courier New', monospace">Courier New (ثقيل)</option>
-                                    <option value="'Monaco', monospace">Monaco (رقيق)</option>
-                                    <option value="'Inconsolata', monospace">Inconsolata (حاد)</option>
-                                    <option value="'Fira Code', monospace">Fira Code (حاد)</option>
-                                    <option value="'Ubuntu Mono', monospace">Ubuntu Mono (ناعم)</option>
-                                </optgroup>
-                                <optgroup label="خطوط إنجليزية">
-                                    <option value="'Arial', sans-serif">Arial (كلاسيكي)</option>
-                                    <option value="'Helvetica', sans-serif">Helvetica (حديث)</option>
-                                    <option value="'Times New Roman', serif">Times New Roman (رسمي)</option>
-                                    <option value="'Georgia', serif">Georgia (أنيق)</option>
-                                    <option value="'Verdana', sans-serif">Verdana (واضح)</option>
-                                    <option value="'Courier New', monospace">Courier New (أحادي)</option>
-                                    <option value="'Comic Sans MS', cursive">Comic Sans MS (مرح)</option>
-                                    <option value="'Trebuchet MS', sans-serif">Trebuchet MS (حديث)</option>
-                                    <option value="'Impact', sans-serif">Impact (ضخم)</option>
-                                    <option value="'Palatino', serif">Palatino (أنيق)</option>
-                                    <option value="'Garamond', serif">Garamond (كلاسيكي)</option>
-                                    <option value="'Bookman', serif">Bookman (أدبي)</option>
-                                    <option value="'Consolas', monospace">Consolas (برمجة)</option>
-                                    <option value="'Segoe UI', sans-serif">Segoe UI (نظيف)</option>
-                                    <option value="'Tahoma', sans-serif">Tahoma (صغير)</option>
-                                    <option value="'Century Gothic', sans-serif">Century Gothic (مستقبلي)</option>
-                                    <option value="'Lucida Console', monospace">Lucida Console (موحد)</option>
-                                    <option value="'Calibri', sans-serif">Calibri (احترافي)</option>
-                                    <option value="'Lucida Grande', sans-serif">Lucida Grande (ناعم)</option>
-                                    <option value="'Trebuchet MS', sans-serif">Trebuchet MS (ديناميكي)</option>
-                                    <option value="'Courier', monospace">Courier (كلاسيكي)</option>
-                                    <option value="'Monaco', monospace">Monaco (رقيق جداً)</option>
-                                    <option value="'Menlo', monospace">Menlo (حاد)</option>
-                                    <option value="'DejaVu Sans Mono', monospace">DejaVu Sans Mono (موحد)</option>
-                                    <option value="'Liberation Mono', monospace">Liberation Mono (حر)</option>
-                                    <option value="'Lucida Typewriter', monospace">Lucida Typewriter (آلي)</option>
-                                    <option value="'Roboto', sans-serif">Roboto (حديث)</option>
-                                    <option value="'Open Sans', sans-serif">Open Sans (نظيف)</option>
-                                    <option value="'Lato', sans-serif">Lato (متوا��ن)</option>
-                                    <option value="'Raleway', sans-serif">Raleway (أنيق)</option>
-                                    <option value="'Ubuntu', sans-serif">Ubuntu (صريح)</option>
-                                    <option value="'Oswald', sans-serif">Oswald (ضيق)</option>
-                                    <option value="'Playfair Display', serif">Playfair Display (فاخر)</option>
-                                    <option value="'Montserrat', sans-serif">Montserrat (حديث)</option>
-                                    <option value="'Poppins', sans-serif">Poppins (ودود)</option>
-                                    <option value="'Inter', sans-serif">Inter (احترافي)</option>
-                                    <option value="'IBM Plex Sans', sans-serif">IBM Plex Sans (مصمم)</option>
-                                    <option value="'Source Sans Pro', sans-serif">Source Sans Pro (مفتوح)</option>
-                                    <option value="'Libre Franklin', sans-serif">Libre Franklin (متطور)</option>
-                                    <option value="'Rubik', sans-serif">Rubik (دائري)</option>
-                                    <option value="'Work Sans', sans-serif">Work Sans (وظيفي)</option>
-                                    <option value="'Quicksand', sans-serif">Quicksand (ودود)</option>
-                                    <option value="'Nunito', sans-serif">Nunito (ناعم)</option>
-                                    <option value="'Merriweather', serif">Merriweather (أدبي)</option>
-                                    <option value="'Bitter', serif">Bitter (قوي)</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="control-group">
-                            <label>خط النص الثانوي:</label>
-                            <select id="secondaryFont" onchange="updateCanvas()">
-                                <option value="'Arial', sans-serif">Arial</option>
-                                <option value="'Helvetica', sans-serif">Helvetica</option>
-                                <option value="'Verdana', sans-serif">Verdana</option>
-                                <option value="'Times New Roman', serif">Times New Roman</option>
-                                <option value="'Georgia', serif">Georgia</option>
-                                <option value="'Courier New', monospace">Courier New</option>
-                            </select>
-                        </div>
-                        <div class="control-group">
-                            <label>وزن الخط الرئيسي:</label>
-                            <select id="mainFontWeight" onchange="updateCanvas()">
-                                <option value="100">رقيق جداً (100)</option>
-                                <option value="200">رقيق (200)</option>
-                                <option value="300">خفيف (300)</option>
-                                <option value="400" selected>عادي (400)</option>
-                                <option value="500">متوسط (500)</option>
-                                <option value="600">شبه غليظ (600)</option>
-                                <option value="700">غليظ (700)</option>
-                                <option value="800">أكثر غلظة (800)</option>
-                                <option value="900">غليظ جداً (900)</option>
-                            </select>
-                        </div>
-                        <div class="control-group">
-                            <label>نمط الخط الرئيسي:</label>
-                            <select id="mainFontStyle" onchange="updateCanvas()">
-                                <option value="normal">عادي</option>
-                                <option value="italic">مائل</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- علامة الأنماط -->
-                    <div id="styles" class="tab-content">
-                        <div class="control-group">
-                            <label>قالب النص الرئيسي:</label>
-                            <select id="mainTextStyle" onchange="updateCanvas()">
-                                <option value="none">بدون</option>
-                                <option value="border-white">حدود بيضاء</option>
-                                <option value="border-black">حدود سوداء</option>
-                                <option value="border-gold">حدود ذهبية</option>
-                                <option value="shadow-soft">ظل ناعم</option>
-                                <option value="shadow-hard">ظل حاد</option>
-                                <option value="shadow-colored">ظل ملون</option>
-                                <option value="glow-blue">توهج أزرق</option>
-                                <option value="glow-pink">توهج وردي</option>
-                                <option value="glow-green">توهج أخضر</option>
-                                <option value="background-white">خلفية بيضاء</option>
-                                <option value="background-black">خلفية سوداء</option>
-                                <option value="background-gradient">خلفية متدرجة</option>
-                                <option value="stroke-effect">تأثير التخطيط</option>
-                                <option value="3d-effect">تأثير ثلاثي الأبعاد</option>
-                                <option value="neon-effect">تأثير نيون</option>
-                                <option value="vintage">تأثير عتيق</option>
-                                <option value="glass-effect">تأثير زجاجي</option>
-                                <option value="gradient-text">نص متدرج</option>
-                                <option value="rainbow-text">نص قوس قزح</option>
-                                <option value="wave-effect">تأثير موجي</option>
-                                <option value="fire-effect">تأثير ناري</option>
-                                <option value="ice-effect">تأثير ثلجي</option>
-                                <option value="liquid-effect">تأثير سائل</option>
-                                <option value="pixel-effect">تأثير بكسل</option>
-                                <option value="chrome-effect">تأثير كروم</option>
-                                <option value="wood-effect">تأثير خشبي</option>
-                                <option value="metal-effect">تأثير معدني</option>
-                                <option value="marble-effect">تأثير رخامي</option>
-                                <option value="shadow-multi">ظلال متعددة</option>
-                                <option value="outline-style">نمط الخطوط</option>
-                                <option value="comic-style">أسلوب كوميك</option>
-                                <option value="watercolor">ألوان مائية</option>
-                                <option value="chalk-style">أسلوب طباشير</option>
-                                <option value="gold-luxury">ذهب فاخر</option>
-                                <option value="silver-luxury">فضة فاخرة</option>
-                                <option value="copper-luxury">نحاس فاخر</option>
-                                <option value="rainbow-border">حدود قوس قزح</option>
-                                <option value="neon-border">حدود نيون</option>
-                                <option value="glitch-effect">تأثير عطل</option>
-                                <option value="vhs-effect">تأثير VHS</option>
-                                <option value="holographic">هولوغرافي</option>
-                                <option value="retro-80s">ريترو الثمانينات</option>
-                                <option value="retro-90s">ريترو التسعينات</option>
-                                <option value="cyberpunk">سايبربانك</option>
-                                <option value="steampunk">ستيمبانك</option>
-                                <option value="mystic">صوفي</option>
-                                <option value="cosmic">كوني</option>
-                                <option value="forest">غابة</option>
-                                <option value="ocean">محيط</option>
-                                <option value="sunset">غروب الشمس</option>
-                                <option value="midnight">منتصف الليل</option>
-                                <option value="aurora">الشفق القطبي</option>
-                                <option value="volcanic">بركاني</option>
-                                <option value="arctic">قطبي</option>
-                                <option value="desert">صحراوي</option>
-                            </select>
-                        </div>
-
-                        <!-- تحكم إضافي للحدود -->
-                        <div id="borderControls" class="control-group" style="display:none;">
-                            <label>سمك الحدود:</label>
-                            <input type="range" id="borderWidth" min="0" max="20" value="3" oninput="updateCanvas()">
-                            <label>لون الحدود:</label>
-                            <input type="color" id="borderColor" value="#ffffff" onchange="updateCanvas()">
-                            <label>حدة الحدود:</label>
-                            <input type="range" id="borderSharpness" min="0" max="100" value="50" oninput="updateCanvas()">
-                        </div>
-
-                        <!-- تحكم خلفية النص -->
-                        <div id="textBackgroundControls" class="control-group" style="display:none;">
-                            <label>حجم الخلفية:</label>
-                            <input type="range" id="bgSize" min="0" max="50" value="10" oninput="updateCanvas()">
-                            <label>الطول:</label>
-                            <input type="range" id="bgLength" min="0" max="100" value="50" oninput="updateCanvas()">
-                            <label>العرض:</label>
-                            <input type="range" id="bgWidth" min="0" max="100" value="50" oninput="updateCanvas()">
-                            <label>حدة الخلفية:</label>
-                            <input type="range" id="bgSharpness" min="0" max="100" value="50" oninput="updateCanvas()">
-                            <label>لون الخلفية:</label>
-                            <input type="color" id="bgColor" value="#000000" onchange="updateCanvas()">
-                        </div>
-
-                        <div class="control-group">
-                            <label>لون النص الرئيسي:</label>
-                            <input type="color" id="mainTextColor" value="#ffffff" onchange="updateCanvas()">
-                        </div>
-                        <div class="control-group">
-                            <label>لون النص الثانوي:</label>
-                            <input type="color" id="secondaryTextColor" value="#cccccc" onchange="updateCanvas()">
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="brand">
+        <div class="brand-mark">T</div>
+        <div>
+          <div class="brand-name">Thumbnail Studio</div>
+          <div class="brand-subtitle">Creative Editor</div>
         </div>
-    </div>
+      </div>
 
-    <script src="script.js"></script>
+      <div class="top-actions">
+
+        <button class="top-btn" id="newProjectBtn">
+          <span>＋</span> New
+        </button>
+
+        <button class="top-btn" id="undoBtn">
+          ↶
+        </button>
+
+        <button class="top-btn" id="redoBtn">
+          ↷
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="export-btn" id="exportBtn">
+          Export
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- MAIN WORKSPACE -->
+    <main class="workspace">
+
+
+      <!-- LEFT TOOLBAR -->
+      <aside class="toolbar">
+
+        <button class="tool active" data-tool="select">
+          <span>⌁</span>
+          <small>Select</small>
+        </button>
+
+        <button class="tool" data-tool="text" id="addTextBtn">
+          <span>T</span>
+          <small>Text</small>
+        </button>
+
+        <button class="tool" data-tool="image" id="uploadImageBtn">
+          <span>▧</span>
+          <small>Image</small>
+        </button>
+
+        <button class="tool" data-tool="shape">
+          <span>□</span>
+          <small>Shape</small>
+        </button>
+
+        <button class="tool" data-tool="background">
+          <span>◐</span>
+          <small>Background</small>
+        </button>
+
+        <div class="toolbar-spacer"></div>
+
+        <button class="tool" id="zoomOutBtn">
+          <span>−</span>
+          <small>Zoom</small>
+        </button>
+
+        <button class="tool" id="zoomInBtn">
+          <span>＋</span>
+          <small>Zoom</small>
+        </button>
+
+      </aside>
+
+
+      <!-- CENTER -->
+      <section class="editor-area">
+
+        <div class="canvas-toolbar">
+
+          <div class="canvas-info">
+            <span class="status-dot"></span>
+            <span id="canvasSizeLabel">1280 × 720</span>
+          </div>
+
+          <div class="canvas-controls">
+
+            <button id="fitBtn">Fit</button>
+
+            <span id="zoomLabel">60%</span>
+
+            <button id="fullscreenBtn">⛶</button>
+
+          </div>
+
+        </div>
+
+
+        <div class="canvas-wrapper" id="canvasWrapper">
+
+          <div class="canvas-shadow">
+
+            <div
+              id="canvas"
+              class="canvas"
+              style="width:1280px;height:720px;"
+            >
+
+              <div
+                class="background-layer"
+                id="backgroundLayer"
+              ></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="bottom-bar">
+
+          <div class="hint">
+            <span>Drag elements to move</span>
+          </div>
+
+          <div class="coordinates">
+            <span id="cursorX">X: 0</span>
+            <span id="cursorY">Y: 0</span>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- RIGHT PANEL -->
+      <aside class="properties-panel">
+
+        <!-- LAYERS -->
+
+        <section class="panel-section layers-section">
+
+          <div class="panel-title-row">
+
+            <h3>Layers</h3>
+
+            <div class="layer-actions">
+              <button id="duplicateBtn">⧉</button>
+              <button id="deleteBtn">⌫</button>
+            </div>
+
+          </div>
+
+          <div class="layers" id="layers">
+
+            <div
+              class="layer-item background-item selected"
+              data-layer="background"
+            >
+
+              <div class="layer-icon">◐</div>
+
+              <div class="layer-name">
+                Background
+              </div>
+
+              <div class="layer-visibility">
+                ●
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- PROPERTIES -->
+
+        <section class="panel-section properties-section">
+
+          <div class="panel-title-row">
+            <h3>Properties</h3>
+          </div>
+
+          <div id="properties">
+
+            <div class="empty-properties">
+
+              <div class="empty-icon">✦</div>
+
+              <strong>No element selected</strong>
+
+              <span>
+                Select an element to edit its properties.
+              </span>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </aside>
+
+    </main>
+
+  </div>
+
+
+  <!-- HIDDEN FILE INPUT -->
+  <input
+    type="file"
+    id="imageInput"
+    accept="image/png,image/jpeg,image/webp"
+    hidden
+  >
+
+
+  <script src="app.js"></script>
+
 </body>
 </html>
+```
