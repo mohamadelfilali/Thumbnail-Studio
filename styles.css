@@ -1,0 +1,393 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+header h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+header p {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+.main-content {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.workspace {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* المعاينة */
+.preview-section {
+    flex: 1;
+    min-width: 400px;
+    background: #2d2d44;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+#canvas {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    background: #1a1a1a;
+    border-radius: 10px;
+    border: 2px solid #667eea;
+    margin-bottom: 20px;
+}
+
+.canvas-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 150px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #3d3d5c;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4d4d6c;
+    transform: translateY(-2px);
+}
+
+/* لوحة التحكم */
+.control-panel {
+    flex: 1;
+    min-width: 300px;
+    background: #2d2d44;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.tabs {
+    display: flex;
+    gap: 0;
+    background: #1a1a1a;
+    padding: 10px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 15px;
+    background: #3d3d5c;
+    color: #aaa;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 80px;
+    font-weight: 500;
+}
+
+.tab-btn:hover {
+    background: #4d4d6c;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    max-height: 600px;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* مجموعات التحكم */
+.control-group {
+    margin-bottom: 25px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #e0e0e0;
+    font-size: 0.95em;
+}
+
+.control-group input[type="text"],
+.control-group input[type="url"],
+.control-group input[type="number"],
+.control-group input[type="file"],
+.control-group textarea,
+.control-group select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #3d3d5c;
+    border-radius: 6px;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 0.95em;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
+}
+
+.control-group input[type="text"]:focus,
+.control-group input[type="url"]:focus,
+.control-group input[type="number"]:focus,
+.control-group textarea:focus,
+.control-group select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.control-group textarea {
+    resize: vertical;
+    min-height: 70px;
+    font-family: inherit;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #3d3d5c;
+    outline: none;
+    -webkit-appearance: none;
+    margin: 10px 0;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.control-group input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.control-group input[type="color"] {
+    width: 100%;
+    height: 45px;
+    cursor: pointer;
+    border: 2px solid #3d3d5c;
+}
+
+.control-group input[type="color"]:hover {
+    border-color: #667eea;
+}
+
+/* القيمة العددية للمتغيرات */
+.control-group span {
+    display: inline-block;
+    background: #3d3d5c;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    margin-right: 10px;
+}
+
+/* القوالب المعيارية */
+.presets {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #3d3d5c;
+}
+
+.presets h4 {
+    margin-bottom: 10px;
+    color: #e0e0e0;
+}
+
+.preset-btn {
+    display: inline-block;
+    padding: 8px 12px;
+    background: #3d3d5c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 0.85em;
+    transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transform: translateY(-2px);
+}
+
+/* التحكم الفرعي */
+.sub-controls {
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.sub-controls label {
+    display: inline-block;
+    width: 30%;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.sub-controls input[type="range"] {
+    width: 65%;
+    display: inline-block;
+}
+
+/* التمرير */
+.tab-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 10px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
+}
+
+/* الاستجابة */
+@media (max-width: 1200px) {
+    .workspace {
+        flex-direction: column;
+    }
+
+    .preview-section,
+    .control-panel {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        flex: 1;
+        min-width: 60px;
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+
+    .btn {
+        min-width: 100px;
+    }
+
+    .control-group {
+        margin-bottom: 15px;
+    }
+}
+
+/* التأثيرات */
+.control-group input:disabled,
+.control-group select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.control-group optgroup {
+    background: #2d2d44;
+    color: #fff;
+}
+
+.control-group option {
+    background: #1a1a1a;
+    color: #fff;
+}
